@@ -1,0 +1,1693 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Farmacia Digital - Prototipo</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* Variables CSS */
+        :root {
+            --primary-color: #2c5aa0;
+            --secondary-color: #4a90a4;
+            --accent-color: #f39c12;
+            --success-color: #27ae60;
+            --error-color: #e74c3c;
+            --text-dark: #2c3e50;
+            --text-light: #7f8c8d;
+            --background-light: #f8f9fa;
+            --background-white: #ffffff;
+            --border-color: #e1e8ed;
+            --shadow: 0 2px 10px rgba(0,0,0,0.1);
+            --shadow-hover: 0 5px 20px rgba(0,0,0,0.15);
+            --border-radius: 8px;
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text-dark);
+            background-color: var(--background-light);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header Styles */
+        .header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: var(--shadow);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo i {
+            font-size: 2rem;
+            color: var(--accent-color);
+        }
+
+        .logo h1 {
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+
+        .nav {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: var(--border-radius);
+            transition: var(--transition);
+        }
+
+        .nav-link:hover {
+            background-color: rgba(255,255,255,0.1);
+            transform: translateY(-2px);
+        }
+
+        .admin-link {
+            background-color: var(--accent-color);
+            color: var(--text-dark);
+        }
+
+        .admin-link:hover {
+            background-color: #e67e22;
+            color: white;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 4rem 0;
+            text-align: center;
+        }
+
+        .hero-content h2 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .hero-content p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        /* Search Container */
+        .search-container {
+            max-width: 600px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .search-box {
+            display: flex;
+            background: white;
+            border-radius: 50px;
+            padding: 8px;
+            box-shadow: var(--shadow-hover);
+            transition: var(--transition);
+        }
+
+        .search-box:focus-within {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        #searchInput {
+            flex: 1;
+            border: none;
+            outline: none;
+            padding: 1rem 1.5rem;
+            font-size: 1.1rem;
+            border-radius: 50px;
+            color: var(--text-dark);
+        }
+
+        .search-btn {
+            background: var(--accent-color);
+            border: none;
+            border-radius: 50px;
+            padding: 1rem 1.5rem;
+            color: white;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .search-btn:hover {
+            background: #e67e22;
+            transform: scale(1.05);
+        }
+
+        /* Search Suggestions */
+        .search-suggestions {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-hover);
+            margin-top: 8px;
+            max-height: 300px;
+            overflow-y: auto;
+            z-index: 100;
+            display: none;
+        }
+
+        .suggestion-item {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            cursor: pointer;
+            transition: var(--transition);
+            color: var(--text-dark);
+        }
+
+        .suggestion-item:hover {
+            background-color: var(--background-light);
+        }
+
+        .suggestion-item:last-child {
+            border-bottom: none;
+        }
+
+        /* Catálogo Section */
+        .catalogo {
+            padding: 3rem 0;
+            min-height: 60vh;
+        }
+
+        .catalogo-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .catalogo-header h3 {
+            font-size: 2rem;
+            color: var(--text-dark);
+        }
+
+        .sort-select {
+            padding: 0.8rem 1.2rem;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            background: white;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .sort-select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(44, 90, 160, 0.1);
+        }
+
+        /* Loading Spinner */
+        .loading-spinner {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-light);
+            display: none;
+        }
+
+        .loading-spinner i {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+        }
+
+        /* Resultados Grid */
+        .resultados-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .medicamento-card {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            border-left: 4px solid var(--primary-color);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .medicamento-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: var(--transition);
+        }
+
+        .medicamento-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+            border-left-color: var(--accent-color);
+        }
+
+        .medicamento-card:hover::before {
+            left: 100%;
+        }
+
+        .medicamento-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .medicamento-nombre {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            line-height: 1.3;
+        }
+
+        .medicamento-precio {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--success-color);
+            white-space: nowrap;
+        }
+
+        .medicamento-descripcion {
+            color: var(--text-light);
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+
+        .medicamento-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .stock-badge {
+            background: var(--success-color);
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .stock-badge.low {
+            background: var(--accent-color);
+        }
+
+        .stock-badge.out {
+            background: var(--error-color);
+        }
+
+        .ver-detalles {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .ver-detalles:hover {
+            background: var(--secondary-color);
+            transform: scale(1.05);
+        }
+
+        /* No Resultados */
+        .no-resultados {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-light);
+            display: none;
+        }
+
+        .no-resultados i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: var(--text-light);
+        }
+
+        .no-resultados h4 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-dark);
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            border-radius: var(--border-radius);
+            width: 90%;
+            max-width: 600px;
+            box-shadow: var(--shadow-hover);
+            animation: slideIn 0.3s ease;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            background: var(--background-light);
+            border-radius: var(--border-radius) var(--border-radius) 0 0;
+        }
+
+        .modal-header h4 {
+            font-size: 1.5rem;
+            color: var(--text-dark);
+        }
+
+        .close {
+            font-size: 2rem;
+            cursor: pointer;
+            color: var(--text-light);
+            transition: var(--transition);
+        }
+
+        .close:hover {
+            color: var(--error-color);
+            transform: scale(1.1);
+        }
+
+        .modal-body {
+            padding: 2rem;
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--text-dark);
+            color: white;
+            padding: 2rem 0 1rem;
+            margin-top: 3rem;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-section h4 {
+            margin-bottom: 1rem;
+            color: var(--accent-color);
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-section ul li a {
+            color: #bdc3c7;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .footer-section ul li a:hover {
+            color: var(--accent-color);
+        }
+
+        .footer-section p {
+            color: #bdc3c7;
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-section i {
+            margin-right: 0.5rem;
+            color: var(--accent-color);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 1rem;
+            border-top: 1px solid #34495e;
+            color: #95a5a6;
+        }
+
+        /* Admin Panel */
+        .admin-panel {
+            display: none;
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            margin: 2rem 0;
+            box-shadow: var(--shadow);
+        }
+
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .admin-header h3 {
+            color: var(--primary-color);
+        }
+
+        .close-admin {
+            background: var(--error-color);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .close-admin:hover {
+            background: #c0392b;
+        }
+
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 1.5rem;
+        }
+
+        .admin-table th,
+        .admin-table td {
+            padding: 0.8rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .admin-table th {
+            background-color: var(--background-light);
+            color: var(--text-dark);
+            font-weight: 600;
+        }
+
+        .admin-table tr:hover {
+            background-color: #f5f9ff;
+        }
+
+        .admin-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .admin-btn {
+            padding: 0.4rem 0.8rem;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 0.9rem;
+        }
+
+        .edit-btn {
+            background-color: var(--accent-color);
+            color: white;
+        }
+
+        .delete-btn {
+            background-color: var(--error-color);
+            color: white;
+        }
+
+        .add-btn {
+            background-color: var(--success-color);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-weight: 500;
+            margin-top: 1rem;
+            transition: var(--transition);
+        }
+
+        .add-btn:hover {
+            background-color: #219653;
+        }
+
+        /* Admin Form */
+        .admin-form {
+            background: var(--background-light);
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            margin-top: 1.5rem;
+            display: none;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+        }
+
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .save-btn {
+            background-color: var(--success-color);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .save-btn:hover {
+            background-color: #219653;
+        }
+
+        .cancel-btn {
+            background-color: var(--text-light);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .cancel-btn:hover {
+            background-color: #636e72;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideIn {
+            from { 
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to { 
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 15px;
+            }
+            
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .nav {
+                gap: 1rem;
+            }
+            
+            .hero-content h2 {
+                font-size: 2rem;
+            }
+            
+            .hero-content p {
+                font-size: 1rem;
+            }
+            
+            .catalogo-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .resultados-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .modal-content {
+                margin: 10% auto;
+                width: 95%;
+            }
+            
+            .medicamento-header {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            
+            .medicamento-footer {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: stretch;
+            }
+            
+            .admin-table {
+                display: block;
+                overflow-x: auto;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero {
+                padding: 2rem 0;
+            }
+            
+            .hero-content h2 {
+                font-size: 1.8rem;
+            }
+            
+            .search-box {
+                padding: 4px;
+            }
+            
+            #searchInput {
+                padding: 0.8rem 1rem;
+                font-size: 1rem;
+            }
+            
+            .search-btn {
+                padding: 0.8rem 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-pills"></i>
+                    <h1>Farmacia Digital</h1>
+                </div>
+                <nav class="nav">
+                    <a href="#inicio" class="nav-link">Inicio</a>
+                    <a href="#catalogo" class="nav-link">Catálogo</a>
+                    <a href="#" id="adminBtn" class="nav-link admin-link">
+                        <i class="fas fa-user-shield"></i> Admin
+                    </a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="inicio" class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h2>Encuentra tus Medicamentos</h2>
+                <p>Busca en nuestro catálogo completo de medicamentos con precios actualizados</p>
+                
+                <!-- Buscador Principal -->
+                <div class="search-container">
+                    <div class="search-box">
+                        <input 
+                            type="text" 
+                            id="searchInput" 
+                            placeholder="Buscar medicamento (ej: paracetamol, ibuprofeno...)"
+                            autocomplete="off"
+                        >
+                        <button id="searchBtn" class="search-btn">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                    <div id="searchSuggestions" class="search-suggestions"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sección de Resultados -->
+    <section id="catalogo" class="catalogo">
+        <div class="container">
+            <div class="catalogo-header">
+                <h3 id="resultadosTitle">Medicamentos Disponibles</h3>
+                <div class="filtros">
+                    <select id="sortSelect" class="sort-select">
+                        <option value="nombre">Ordenar por Nombre</option>
+                        <option value="precio_asc">Precio: Menor a Mayor</option>
+                        <option value="precio_desc">Precio: Mayor a Menor</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Loading Spinner -->
+            <div id="loadingSpinner" class="loading-spinner">
+                <i class="fas fa-spinner fa-spin"></i>
+                <p>Buscando medicamentos...</p>
+            </div>
+
+            <!-- Resultados Grid -->
+            <div id="resultadosGrid" class="resultados-grid">
+                <!-- Los resultados se cargarán aquí dinámicamente -->
+            </div>
+
+            <!-- Mensaje cuando no hay resultados -->
+            <div id="noResultados" class="no-resultados">
+                <i class="fas fa-search"></i>
+                <h4>No se encontraron medicamentos</h4>
+                <p>Intenta con otro término de búsqueda</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Panel de Administración -->
+    <div class="container">
+        <div id="adminPanel" class="admin-panel">
+            <div class="admin-header">
+                <h3>Panel de Administración</h3>
+                <button id="closeAdmin" class="close-admin">
+                    <i class="fas fa-times"></i> Cerrar
+                </button>
+            </div>
+            
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Precio</th>
+                        <th>Stock</th>
+                        <th>Descripción</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="adminTableBody">
+                    <!-- Datos de administración se cargarán aquí -->
+                </tbody>
+            </table>
+            
+            <button id="addMedBtn" class="add-btn">
+                <i class="fas fa-plus"></i> Agregar Medicamento
+            </button>
+            
+            <div id="adminForm" class="admin-form">
+                <h4>Agregar/Editar Medicamento</h4>
+                <div class="form-group">
+                    <label for="adminNombre">Nombre *</label>
+                    <input type="text" id="adminNombre" required>
+                </div>
+                <div class="form-group">
+                    <label for="adminPrecio">Precio (MXN) *</label>
+                    <input type="number" id="adminPrecio" step="0.01" min="0" required>
+                </div>
+                <div class="form-group">
+                    <label for="adminStock">Stock *</label>
+                    <input type="number" id="adminStock" min="0" required>
+                </div>
+                <div class="form-group">
+                    <label for="adminDesc">Descripción</label>
+                    <textarea id="adminDesc"></textarea>
+                </div>
+                <div class="form-actions">
+                    <button id="saveMedBtn" class="save-btn">
+                        <i class="fas fa-save"></i> Guardar
+                    </button>
+                    <button id="cancelMedBtn" class="cancel-btn">
+                        <i class="fas fa-times"></i> Cancelar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Detalles -->
+    <div id="modalDetalles" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 id="modalTitle">Detalles del Medicamento</h4>
+                <span class="close" id="closeModal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div id="modalContent">
+                    <!-- Contenido del modal se carga dinámicamente -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>Farmacia Digital</h4>
+                    <p>Tu catálogo confiable de medicamentos online</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Información</h4>
+                    <ul>
+                        <li><a href="#inicio">Inicio</a></li>
+                        <li><a href="#catalogo">Catálogo</a></li>
+                        <li><a href="#">Contacto</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Contacto</h4>
+                    <p><i class="fas fa-phone"></i> +52 442 123 4567</p>
+                    <p><i class="fas fa-envelope"></i> info@farmaciadigital.com</p>
+                    <p><i class="fas fa-map-marker-alt"></i> Querétaro, México</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Farmacia Digital. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Datos de ejemplo para medicamentos
+        const medicamentos = [
+            { id: 1, nombre: 'Paracetamol 500mg', precio: 25.50, descripcion: 'Analgésico y antipirético', stock: 100 },
+            { id: 2, nombre: 'Ibuprofeno 400mg', precio: 35.75, descripcion: 'Antiinflamatorio no esteroideo', stock: 80 },
+            { id: 3, nombre: 'Amoxicilina 500mg', precio: 65.00, descripcion: 'Antibiótico de amplio espectro', stock: 50 },
+            { id: 4, nombre: 'Loratadina 10mg', precio: 28.90, descripcion: 'Antihistamínico para alergias', stock: 75 },
+            { id: 5, nombre: 'Omeprazol 20mg', precio: 42.30, descripcion: 'Inhibidor de la bomba de protones', stock: 60 },
+            { id: 6, nombre: 'Salbutamol 100mcg', precio: 85.20, descripcion: 'Broncodilatador para asma', stock: 40 },
+            { id: 7, nombre: 'Metformina 850mg', precio: 38.45, descripcion: 'Antidiabético oral', stock: 90 },
+            { id: 8, nombre: 'Atorvastatina 20mg', precio: 55.80, descripcion: 'Reductor de colesterol', stock: 70 },
+            { id: 9, nombre: 'Losartán 50mg', precio: 48.15, descripcion: 'Antihipertensivo', stock: 85 },
+            { id: 10, nombre: 'Clonazepam 2mg', precio: 72.60, descripcion: 'Ansiolítico y anticonvulsivo', stock: 30 }
+        ];
+
+        // Variables globales
+        let medicamentosFiltrados = [...medicamentos];
+        let terminoBusqueda = '';
+        let medicamentoEditId = null;
+        
+        // Clase principal para el catálogo
+        class FarmaciaCatalogo {
+            constructor() {
+                this.initializeElements();
+                this.bindEvents();
+                this.cargarMedicamentos();
+            }
+
+            /**
+             * Inicializa los elementos del DOM
+             */
+            initializeElements() {
+                this.searchInput = document.getElementById('searchInput');
+                this.searchBtn = document.getElementById('searchBtn');
+                this.searchSuggestions = document.getElementById('searchSuggestions');
+                this.resultadosGrid = document.getElementById('resultadosGrid');
+                this.loadingSpinner = document.getElementById('loadingSpinner');
+                this.noResultados = document.getElementById('noResultados');
+                this.resultadosTitle = document.getElementById('resultadosTitle');
+                this.sortSelect = document.getElementById('sortSelect');
+                this.modal = document.getElementById('modalDetalles');
+                this.modalContent = document.getElementById('modalContent');
+                this.modalTitle = document.getElementById('modalTitle');
+                this.closeModal = document.getElementById('closeModal');
+                
+                // Admin elements
+                this.adminBtn = document.getElementById('adminBtn');
+                this.adminPanel = document.getElementById('adminPanel');
+                this.closeAdmin = document.getElementById('closeAdmin');
+                this.adminTableBody = document.getElementById('adminTableBody');
+                this.addMedBtn = document.getElementById('addMedBtn');
+                this.adminForm = document.getElementById('adminForm');
+                this.adminNombre = document.getElementById('adminNombre');
+                this.adminPrecio = document.getElementById('adminPrecio');
+                this.adminStock = document.getElementById('adminStock');
+                this.adminDesc = document.getElementById('adminDesc');
+                this.saveMedBtn = document.getElementById('saveMedBtn');
+                this.cancelMedBtn = document.getElementById('cancelMedBtn');
+            }
+
+            /**
+             * Vincula eventos a los elementos
+             */
+            bindEvents() {
+                // Eventos de búsqueda
+                this.searchInput.addEventListener('input', (e) => this.handleSearchInput(e));
+                this.searchInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        this.realizarBusqueda();
+                    }
+                });
+                this.searchBtn.addEventListener('click', () => this.realizarBusqueda());
+
+                // Eventos de ordenamiento
+                this.sortSelect.addEventListener('change', (e) => this.ordenarResultados(e.target.value));
+
+                // Eventos del modal
+                this.closeModal.addEventListener('click', () => this.cerrarModal());
+                this.modal.addEventListener('click', (e) => {
+                    if (e.target === this.modal) {
+                        this.cerrarModal();
+                    }
+                });
+
+                // Cerrar modal con escape
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape' && this.modal.style.display === 'block') {
+                        this.cerrarModal();
+                    }
+                });
+
+                // Ocultar sugerencias al hacer clic fuera
+                document.addEventListener('click', (e) => {
+                    if (!e.target.closest('.search-container')) {
+                        this.ocultarSugerencias();
+                    }
+                });
+
+                // Smooth scroll para navegación
+                document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                    anchor.addEventListener('click', function (e) {
+                        e.preventDefault();
+                        const target = document.querySelector(this.getAttribute('href'));
+                        if (target) {
+                            target.scrollIntoView({
+                                behavior: 'smooth',
+                                block: 'start'
+                            });
+                        }
+                    });
+                });
+                
+                // Eventos de administración
+                this.adminBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    this.adminPanel.style.display = 'block';
+                    this.cargarAdminTable();
+                });
+                
+                this.closeAdmin.addEventListener('click', () => {
+                    this.adminPanel.style.display = 'none';
+                    this.cerrarFormAdmin();
+                });
+                
+                this.addMedBtn.addEventListener('click', () => {
+                    this.abrirFormAdmin();
+                });
+                
+                this.saveMedBtn.addEventListener('click', () => {
+                    this.guardarMedicamento();
+                });
+                
+                this.cancelMedBtn.addEventListener('click', () => {
+                    this.cerrarFormAdmin();
+                });
+            }
+
+            /**
+             * Maneja la entrada de texto en el buscador
+             */
+            handleSearchInput(e) {
+                const valor = e.target.value.trim();
+                
+                // Si el campo está vacío, mostrar todos los medicamentos
+                if (valor === '') {
+                    this.ocultarSugerencias();
+                    medicamentosFiltrados = [...medicamentos];
+                    this.mostrarResultados();
+                    this.actualizarTitulo('');
+                    return;
+                }
+
+                // Buscar sugerencias
+                this.buscarSugerencias(valor);
+            }
+
+            /**
+             * Busca sugerencias mientras el usuario escribe
+             */
+            buscarSugerencias(termino) {
+                if (termino.length < 2) {
+                    this.ocultarSugerencias();
+                    return;
+                }
+
+                try {
+                    const sugerencias = medicamentos.filter(med => 
+                        med.nombre.toLowerCase().includes(termino.toLowerCase()) ||
+                        (med.descripcion && med.descripcion.toLowerCase().includes(termino.toLowerCase()))
+                    ).slice(0, 5);
+
+                    this.mostrarSugerencias(sugerencias, termino);
+                } catch (error) {
+                    console.error('Error al buscar sugerencias:', error);
+                }
+            }
+
+            /**
+             * Muestra las sugerencias de búsqueda
+             */
+            mostrarSugerencias(sugerencias, termino) {
+                if (sugerencias.length === 0) {
+                    this.ocultarSugerencias();
+                    return;
+                }
+
+                this.searchSuggestions.innerHTML = '';
+                
+                sugerencias.forEach(medicamento => {
+                    const item = document.createElement('div');
+                    item.className = 'suggestion-item';
+                    
+                    // Resaltar el término de búsqueda
+                    const nombreResaltado = this.resaltarTexto(medicamento.nombre, termino);
+                    
+                    item.innerHTML = `
+                        <div>
+                            <strong>${nombreResaltado}</strong>
+                            <div style="font-size: 0.9em; color: #666;">$${parseFloat(medicamento.precio).toFixed(2)}</div>
+                        </div>
+                    `;
+                    
+                    item.addEventListener('click', () => {
+                        this.searchInput.value = medicamento.nombre;
+                        this.ocultarSugerencias();
+                        this.realizarBusqueda();
+                    });
+                    
+                    this.searchSuggestions.appendChild(item);
+                });
+
+                this.searchSuggestions.style.display = 'block';
+            }
+
+            /**
+             * Oculta las sugerencias
+             */
+            ocultarSugerencias() {
+                this.searchSuggestions.style.display = 'none';
+            }
+
+            /**
+             * Resalta el texto de búsqueda en los resultados
+             */
+            resaltarTexto(texto, termino) {
+                if (!termino) return texto;
+                
+                const regex = new RegExp(`(${termino})`, 'gi');
+                return texto.replace(regex, '<mark style="background: #f39c12; padding: 2px;">$1</mark>');
+            }
+
+            /**
+             * Realiza la búsqueda principal
+             */
+            realizarBusqueda() {
+                const termino = this.searchInput.value.trim();
+                terminoBusqueda = termino;
+                this.ocultarSugerencias();
+                
+                this.mostrarCargando();
+
+                try {
+                    if (termino) {
+                        medicamentosFiltrados = medicamentos.filter(med => 
+                            med.nombre.toLowerCase().includes(termino.toLowerCase()) ||
+                            (med.descripcion && med.descripcion.toLowerCase().includes(termino.toLowerCase()))
+                        );
+                    } else {
+                        medicamentosFiltrados = [...medicamentos];
+                    }
+                    
+                    this.mostrarResultados();
+                    this.actualizarTitulo(termino);
+                    
+                    // Scroll hacia los resultados
+                    document.getElementById('catalogo').scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                } catch (error) {
+                    console.error('Error en la búsqueda:', error);
+                    this.mostrarError('Error al realizar la búsqueda. Intenta nuevamente.');
+                } finally {
+                    this.ocultarCargando();
+                }
+            }
+
+            /**
+             * Carga todos los medicamentos al iniciar
+             */
+            cargarMedicamentos() {
+                this.mostrarResultados();
+            }
+
+            /**
+             * Muestra los resultados en el grid
+             */
+            mostrarResultados() {
+                this.resultadosGrid.innerHTML = '';
+                
+                if (medicamentosFiltrados.length === 0) {
+                    this.noResultados.style.display = 'block';
+                    return;
+                }
+
+                this.noResultados.style.display = 'none';
+
+                medicamentosFiltrados.forEach(medicamento => {
+                    const card = this.crearTarjetaMedicamento(medicamento);
+                    this.resultadosGrid.appendChild(card);
+                });
+
+                // Animación de entrada
+                this.animarTarjetas();
+            }
+
+            /**
+             * Crea una tarjeta de medicamento
+             */
+            crearTarjetaMedicamento(medicamento) {
+                const card = document.createElement('div');
+                card.className = 'medicamento-card';
+                
+                const stock = parseInt(medicamento.stock) || 0;
+                let stockClass = 'stock-badge';
+                let stockText = 'Disponible';
+                
+                if (stock === 0) {
+                    stockClass += ' out';
+                    stockText = 'Agotado';
+                } else if (stock < 10) {
+                    stockClass += ' low';
+                    stockText = 'Pocas unidades';
+                }
+
+                const nombreResaltado = this.resaltarTexto(medicamento.nombre, terminoBusqueda);
+                const descripcionResaltada = medicamento.descripcion ? 
+                    this.resaltarTexto(medicamento.descripcion, terminoBusqueda) : '';
+
+                card.innerHTML = `
+                    <div class="medicamento-header">
+                        <h4 class="medicamento-nombre">${nombreResaltado}</h4>
+                        <div class="medicamento-precio">${parseFloat(medicamento.precio).toFixed(2)}</div>
+                    </div>
+                    ${descripcionResaltada ? `<p class="medicamento-descripcion">${descripcionResaltada}</p>` : ''}
+                    <div class="medicamento-footer">
+                        <span class="${stockClass}">${stockText}</span>
+                        <button class="ver-detalles" data-id="${medicamento.id}">
+                            <i class="fas fa-info-circle"></i> Ver detalles
+                        </button>
+                    </div>
+                `;
+
+                // Agregar evento de clic al botón de detalles
+                card.querySelector('.ver-detalles').addEventListener('click', () => {
+                    this.mostrarDetalles(medicamento.id);
+                });
+
+                return card;
+            }
+
+            /**
+             * Anima las tarjetas al aparecer
+             */
+            animarTarjetas() {
+                const cards = document.querySelectorAll('.medicamento-card');
+                cards.forEach((card, index) => {
+                    card.style.opacity = '0';
+                    card.style.transform = 'translateY(20px)';
+                    
+                    setTimeout(() => {
+                        card.style.transition = 'all 0.5s ease';
+                        card.style.opacity = '1';
+                        card.style.transform = 'translateY(0)';
+                    }, index * 100);
+                });
+            }
+
+            /**
+             * Ordena los resultados según el criterio seleccionado
+             */
+            ordenarResultados(criterio) {
+                switch (criterio) {
+                    case 'nombre':
+                        medicamentosFiltrados.sort((a, b) => a.nombre.localeCompare(b.nombre));
+                        break;
+                    case 'precio_asc':
+                        medicamentosFiltrados.sort((a, b) => parseFloat(a.precio) - parseFloat(b.precio));
+                        break;
+                    case 'precio_desc':
+                        medicamentosFiltrados.sort((a, b) => parseFloat(b.precio) - parseFloat(a.precio));
+                        break;
+                }
+                
+                this.mostrarResultados();
+            }
+
+            /**
+             * Muestra los detalles de un medicamento en modal
+             */
+            mostrarDetalles(id) {
+                try {
+                    const medicamento = medicamentos.find(med => med.id === id);
+                    
+                    if (medicamento) {
+                        this.mostrarModalDetalles(medicamento);
+                    } else {
+                        throw new Error('Medicamento no encontrado');
+                    }
+                } catch (error) {
+                    console.error('Error al cargar detalles:', error);
+                    this.mostrarError('Error al cargar los detalles del medicamento');
+                }
+            }
+
+            /**
+             * Muestra el modal con detalles del medicamento
+             */
+            mostrarModalDetalles(medicamento) {
+                const stock = parseInt(medicamento.stock) || 0;
+                let stockInfo = '';
+                let stockClass = '';
+
+                if (stock === 0) {
+                    stockInfo = '<span style="color: #e74c3c;"><i class="fas fa-times-circle"></i> Producto agotado</span>';
+                    stockClass = 'out';
+                } else if (stock < 10) {
+                    stockInfo = `<span style="color: #f39c12;"><i class="fas fa-exclamation-triangle"></i> Pocas unidades (${stock} disponibles)</span>`;
+                    stockClass = 'low';
+                } else {
+                    stockInfo = `<span style="color: #27ae60;"><i class="fas fa-check-circle"></i> ${stock} unidades disponibles</span>`;
+                    stockClass = 'available';
+                }
+
+                this.modalTitle.textContent = medicamento.nombre;
+                this.modalContent.innerHTML = `
+                    <div class="detalle-medicamento">
+                        <div class="detalle-header">
+                            <h3>${medicamento.nombre}</h3>
+                            <div class="detalle-precio">${parseFloat(medicamento.precio).toFixed(2)}</div>
+                        </div>
+                        
+                        ${medicamento.descripcion ? `
+                            <div class="detalle-seccion">
+                                <h4><i class="fas fa-info-circle"></i> Descripción</h4>
+                                <p>${medicamento.descripcion}</p>
+                            </div>
+                        ` : ''}
+                        
+                        <div class="detalle-seccion">
+                            <h4><i class="fas fa-warehouse"></i> Disponibilidad</h4>
+                            <p>${stockInfo}</p>
+                        </div>
+                        
+                        <div class="detalle-info">
+                            <div class="info-item">
+                                <strong>ID del producto:</strong> ${medicamento.id}
+                            </div>
+                            <div class="info-item">
+                                <strong>Precio unitario:</strong> ${parseFloat(medicamento.precio).toFixed(2)}
+                            </div>
+                        </div>
+                        
+                        <div class="detalle-acciones">
+                            <button class="btn-contacto" onclick="farmacia.contactarFarmacia('${medicamento.nombre}')">
+                                <i class="fas fa-phone"></i> Consultar disponibilidad
+                            </button>
+                        </div>
+                    </div>
+                `;
+
+                this.modal.style.display = 'block';
+                document.body.style.overflow = 'hidden';
+            }
+
+            /**
+             * Cierra el modal
+             */
+            cerrarModal() {
+                this.modal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+
+            /**
+             * Simula contacto con la farmacia
+             */
+            contactarFarmacia(nombreMedicamento) {
+                const mensaje = `Hola, me gustaría consultar sobre la disponibilidad de ${nombreMedicamento}`;
+                const numeroWhatsApp = '+5214421234567'; // Cambiar por el número real
+                const url = `https://wa.me/${numeroWhatsApp}?text=${encodeURIComponent(mensaje)}`;
+                
+                // Abrir WhatsApp o mostrar información de contacto
+                if (/Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+                    window.open(url, '_blank');
+                } else {
+                    // Para desktop, mostrar información de contacto
+                    alert(`Para consultar sobre ${nombreMedicamento}, puedes contactarnos:\n\nTeléfono: +52 442 123 4567\nEmail: info@farmaciadigital.com\n\nO escanea el código QR para WhatsApp`);
+                }
+            }
+
+            /**
+             * Actualiza el título de resultados
+             */
+            actualizarTitulo(termino) {
+                if (termino) {
+                    this.resultadosTitle.textContent = `Resultados para "${termino}" (${medicamentosFiltrados.length})`;
+                } else {
+                    this.resultadosTitle.textContent = `Medicamentos Disponibles (${medicamentosFiltrados.length})`;
+                }
+            }
+
+            /**
+             * Muestra el indicador de carga
+             */
+            mostrarCargando() {
+                this.loadingSpinner.style.display = 'block';
+                this.resultadosGrid.style.display = 'none';
+                this.noResultados.style.display = 'none';
+            }
+
+            /**
+             * Oculta el indicador de carga
+             */
+            ocultarCargando() {
+                this.loadingSpinner.style.display = 'none';
+                this.resultadosGrid.style.display = 'grid';
+            }
+
+            /**
+             * Muestra un mensaje de error
+             */
+            mostrarError(mensaje) {
+                this.resultadosGrid.innerHTML = `
+                    <div style="grid-column: 1 / -1; text-align: center; padding: 2rem; color: #e74c3c;">
+                        <i class="fas fa-exclamation-triangle" style="font-size: 2rem; margin-bottom: 1rem;"></i>
+                        <h3>Error</h3>
+                        <p>${mensaje}</p>
+                        <button onclick="location.reload()" style="margin-top: 1rem; padding: 0.5rem 1rem; background: #e74c3c; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                            Recargar página
+                        </button>
+                    </div>
+                `;
+            }
+            
+            /**
+             * ADMINISTRACIÓN
+             */
+             
+            /**
+             * Carga la tabla de administración
+             */
+            cargarAdminTable() {
+                this.adminTableBody.innerHTML = '';
+                
+                medicamentos.forEach(medicamento => {
+                    const row = document.createElement('tr');
+                    
+                    const stockClass = medicamento.stock === 0 ? 'out' : 
+                                      medicamento.stock < 10 ? 'low' : '';
+                    
+                    row.innerHTML = `
+                        <td>${medicamento.id}</td>
+                        <td>${medicamento.nombre}</td>
+                        <td>$${parseFloat(medicamento.precio).toFixed(2)}</td>
+                        <td><span class="stock-badge ${stockClass}">${medicamento.stock}</span></td>
+                        <td>${medicamento.descripcion || '-'}</td>
+                        <td class="admin-actions">
+                            <button class="admin-btn edit-btn" data-id="${medicamento.id}">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="admin-btn delete-btn" data-id="${medicamento.id}">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    `;
+                    
+                    // Agregar eventos a los botones
+                    row.querySelector('.edit-btn').addEventListener('click', () => {
+                        this.editarMedicamento(medicamento.id);
+                    });
+                    
+                    row.querySelector('.delete-btn').addEventListener('click', () => {
+                        this.eliminarMedicamento(medicamento.id);
+                    });
+                    
+                    this.adminTableBody.appendChild(row);
+                });
+            }
+            
+            /**
+             * Abre el formulario para agregar/editar medicamento
+             */
+            abrirFormAdmin() {
+                this.adminForm.style.display = 'block';
+                this.adminNombre.value = '';
+                this.adminPrecio.value = '';
+                this.adminStock.value = '';
+                this.adminDesc.value = '';
+                medicamentoEditId = null;
+                
+                // Scroll al formulario
+                this.adminForm.scrollIntoView({ behavior: 'smooth' });
+            }
+            
+            /**
+             * Cierra el formulario de administración
+             */
+            cerrarFormAdmin() {
+                this.adminForm.style.display = 'none';
+                medicamentoEditId = null;
+            }
+            
+            /**
+             * Prepara el formulario para editar un medicamento
+             */
+            editarMedicamento(id) {
+                const medicamento = medicamentos.find(med => med.id === id);
+                
+                if (medicamento) {
+                    medicamentoEditId = id;
+                    this.adminNombre.value = medicamento.nombre;
+                    this.adminPrecio.value = medicamento.precio;
+                    this.adminStock.value = medicamento.stock;
+                    this.adminDesc.value = medicamento.descripcion || '';
+                    this.adminForm.style.display = 'block';
+                    
+                    // Scroll al formulario
+                    this.adminForm.scrollIntoView({ behavior: 'smooth' });
+                }
+            }
+            
+            /**
+             * Elimina un medicamento (simulado)
+             */
+            eliminarMedicamento(id) {
+                if (confirm('¿Estás seguro de eliminar este medicamento?')) {
+                    const index = medicamentos.findIndex(med => med.id === id);
+                    
+                    if (index !== -1) {
+                        medicamentos.splice(index, 1);
+                        this.cargarAdminTable();
+                        this.cargarMedicamentos();
+                        alert('Medicamento eliminado con éxito');
+                    }
+                }
+            }
+            
+            /**
+             * Guarda un medicamento (nuevo o editado)
+             */
+            guardarMedicamento() {
+                // Validar campos
+                if (!this.adminNombre.value || !this.adminPrecio.value || !this.adminStock.value) {
+                    alert('Por favor completa todos los campos obligatorios');
+                    return;
+                }
+                
+                if (medicamentoEditId) {
+                    // Editar medicamento existente
+                    const medicamento = medicamentos.find(med => med.id === medicamentoEditId);
+                    
+                    if (medicamento) {
+                        medicamento.nombre = this.adminNombre.value;
+                        medicamento.precio = parseFloat(this.adminPrecio.value);
+                        medicamento.stock = parseInt(this.adminStock.value);
+                        medicamento.descripcion = this.adminDesc.value;
+                        
+                        alert('Medicamento actualizado con éxito');
+                    }
+                } else {
+                    // Crear nuevo medicamento
+                    const newId = Math.max(...medicamentos.map(m => m.id), 0) + 1;
+                    
+                    medicamentos.push({
+                        id: newId,
+                        nombre: this.adminNombre.value,
+                        precio: parseFloat(this.adminPrecio.value),
+                        stock: parseInt(this.adminStock.value),
+                        descripcion: this.adminDesc.value
+                    });
+                    
+                    alert('Medicamento agregado con éxito');
+                }
+                
+                // Actualizar UI
+                this.cargarAdminTable();
+                this.cargarMedicamentos();
+                this.cerrarFormAdmin();
+            }
+        }
+
+        // Inicializar la aplicación cuando el DOM esté listo
+        document.addEventListener('DOMContentLoaded', function() {
+            // Crear instancia global para acceso desde onclick
+            window.farmacia = new FarmaciaCatalogo();
+            
+            // Agregar algunos efectos adicionales
+            agregarEfectosAdicionales();
+        });
+
+        /**
+         * Efectos adicionales para mejorar la experiencia
+         */
+        function agregarEfectosAdicionales() {
+            // Efecto parallax suave en el hero
+            window.addEventListener('scroll', function() {
+                const scrolled = window.pageYOffset;
+                const hero = document.querySelector('.hero');
+                if (hero) {
+                    hero.style.transform = `translateY(${scrolled * 0.5}px)`;
+                }
+            });
+
+            // Animación de aparición para elementos al hacer scroll
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver(function(entries) {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, observerOptions);
+
+            // Observar elementos que necesitan animación
+            document.querySelectorAll('.medicamento-card, .footer-section').forEach(el => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(20px)';
+                el.style.transition = 'all 0.6s ease';
+                observer.observe(el);
+            });
+
+            // Efecto de escritura en el título del hero
+            const heroTitle = document.querySelector('.hero h2');
+            if (heroTitle) {
+                const texto = heroTitle.textContent;
+                heroTitle.textContent = '';
+                let i = 0;
+                
+                const typeWriter = function() {
+                    if (i < texto.length) {
+                        heroTitle.textContent += texto.charAt(i);
+                        i++;
+                        setTimeout(typeWriter, 100);
+                    }
+                };
+                
+                setTimeout(typeWriter, 500);
+            }
+
+            // Preloader simple
+            window.addEventListener('load', function() {
+                document.body.classList.add('loaded');
+            });
+        }
+    </script>
+</body>
+</html>
